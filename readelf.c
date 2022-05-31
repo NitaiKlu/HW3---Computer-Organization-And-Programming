@@ -13466,16 +13466,20 @@ process_symbol_table(Filedata *filedata)
 			printf(_("   Num:    Value  Size Type    Bind   Vis      Ndx Name\n"));
 		else
 			printf(_("   Num:    Value          Size Type    Bind   Vis      Ndx Name\n"));
+			
+		for (si = 0; si < filedata->num_dynamic_syms; si++) {
 
-		for (si = 0; si < filedata->num_dynamic_syms; si++)
 			print_dynamic_symbol(filedata, si, filedata->dynamic_symbols, NULL,
 								 filedata->dynamic_strings,
-								 filedata->dynamic_strings_length);
+								 filedata->dynamic_strings_length);	
+		}
 	}
 	else if ((do_dyn_syms || (do_syms && !do_using_dynamic)) && filedata->section_headers != NULL)
 	{
 		unsigned int i;
-
+		//Addition:
+		int counter = 0;
+		//end
 		for (i = 0, section = filedata->section_headers;
 			 i < filedata->file_header.e_shnum;
 			 i++, section++)
@@ -13527,15 +13531,36 @@ process_symbol_table(Filedata *filedata)
 										  _("string table"));
 				strtab_size = strtab != NULL ? string_sec->sh_size : 0;
 			}
-
-			for (si = 0; si < num_syms; si++)
+			//Addition:
+			Elf_Internal_Sym *psym;
+			//end
+			for (si = 0; si < num_syms; si++) {
 				print_dynamic_symbol(filedata, si, symtab, section,
 									 strtab, strtab_size);
+				//Addition:
+				psym = symtab + si;
+				if(ELF_ST_BIND(psym->st_info) == STB_GLOBAL)
+				{
+					counter++;
+				}
+				//end
+			}
 
 			free(symtab);
 			if (strtab != filedata->string_table)
 				free(strtab);
 		}
+		//Addition:
+		if(counter == 0) { //no global symbols
+			printf("\nThere are no GLOBAL symbols in this file.\n");
+		}
+		else if(counter == 1) {
+			printf("\nThere is 1 GLOBAL symbol in this file.\n");
+		}
+		else { //counter > 1
+			printf("\nThere are %d GLOBAL symbols in this file.\n", counter);
+		}
+		//end
 	}
 	else if (do_syms)
 		printf(_("\nDynamic symbol information is not available for displaying symbols.\n"));
