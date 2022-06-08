@@ -711,9 +711,7 @@ print_symbol2(signed int width, const char *symbol, int is_null_type)
 		if (res != NULL)
 			alloced_symbol = symbol = res;
 	}
-	//Addition:
-	width_remaining -= 6;
-	//end
+
 	while (width_remaining)
 	{
 		size_t n;
@@ -766,7 +764,7 @@ print_symbol2(signed int width, const char *symbol, int is_null_type)
 		num_printed += printf("[...]");
 	}
 	// Addition:
-	else {
+	if (!do_dots) {
 	if (!is_null_type) //not NULL 
 	{
 		if(width_remaining >= strlen("_<3LEE"))
