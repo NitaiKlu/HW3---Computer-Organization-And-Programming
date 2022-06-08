@@ -690,7 +690,7 @@ print_symbol2(signed int width, const char *symbol, int is_null_type)
 	else
 	{
 		width_remaining = width;
-		if (!do_not_show_symbol_truncation && (int)strlen(symbol) > width)
+		if (!do_not_show_symbol_truncation && (int)strlen(symbol) + 6 > width)
 		{
 			width_remaining -= 5;
 			if ((int)width_remaining < 0)
@@ -711,7 +711,9 @@ print_symbol2(signed int width, const char *symbol, int is_null_type)
 		if (res != NULL)
 			alloced_symbol = symbol = res;
 	}
-
+	//Addition:
+	width_remaining -= 6;
+	//end
 	while (width_remaining)
 	{
 		size_t n;
@@ -770,9 +772,6 @@ print_symbol2(signed int width, const char *symbol, int is_null_type)
 		if(width_remaining >= strlen("_<3LEE"))
 		{
 			num_printed += printf("_<3LEE");
-		}
-		else {
-			num_printed += printf("[...]");
 		}
 	}
 	// end
